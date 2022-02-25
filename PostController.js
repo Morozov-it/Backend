@@ -1,13 +1,11 @@
-import Post from './Post.js';
+import PostService from "./PostService.js";
 
+//только взаимодествие с запросами и ответами
 class PostController {
     async create(req, res) {
         try {
-            //получаем из данных клиента нужные поля
-            const { author, title, content, picture } = req.body
-            //создаем запись в базе данных
-            const post = await Post.create({ author, title, content, picture })
-            console.log(req.body)
+            //получаем данные от бизнес-сервиса
+            const post = await PostService.create(req.body)
             //возврат клиенту
             return res.json(post)
         } catch (e) {
@@ -17,57 +15,45 @@ class PostController {
 
     async getAll(req, res) {
         try {
-            //получение всех данных с бд
-            const posts = await Post.find();
+            //получение данные от бизнес-сервиса
+            const posts = await PostService.getAll();
             //возврат клиенту
             return res.json(posts)
         } catch (e) {
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async getOne(req, res) {
         try {
-            //получение параметра из строки запроса
-            const { id } = req.params
-            //проверка наличия параметра
-            if (!id) res.status(400).json({message:'Id is missing'})
-            //обращение к модели базы данных
-            const post = await Post.findById(id)
+            //получение данные от бизнес-сервиса
+            const post = await PostService.getOne(req.params.id)
             //возврат клиенту
             return res.json(post)
         } catch (e) {
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async update(req, res) {
         try {
-            //получение тела нового поста из запроса
-            const post = req.body
-            //проверка наличия параметра
-            if (!post._id) res.status(400).json({ message: 'Id is missing' })
-            //обращение к модели базы данных
-            const updatedPost = await Post.findByIdAndUpdate(post._id, post, { new: true })
+            //получение данные от бизнес-сервиса
+            const updatedPost = await PostService.update(req.body)
             //возврат клиенту
             return res.json(updatedPost)
         } catch (e) {
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 
     async delete(req, res) {
         try {
-            //получение параметра из строки запроса
-            const { id } = req.params
-            //проверка наличия параметра
-            if (!id) res.status(400).json({message:'Id is missing'})
-            //обращение к модели базы данных
-            const post = await Post.findByIdAndDelete(id)
+            //получение данные от бизнес-сервиса
+            const post = await PostService.delete(req.params.id)
             //возврат клиенту
             return res.json(post)
         } catch (e) {
-            res.status(500).json(e)
+            res.status(500).json(e.message)
         }
     }
 }
