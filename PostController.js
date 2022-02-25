@@ -4,8 +4,10 @@ import PostService from "./PostService.js";
 class PostController {
     async create(req, res) {
         try {
+            //получение объекта с файлом
+            console.log(req.files)
             //получаем данные от бизнес-сервиса
-            const post = await PostService.create(req.body)
+            const post = await PostService.create(req.body, req.files.picture)
             //возврат клиенту
             return res.json(post)
         } catch (e) {

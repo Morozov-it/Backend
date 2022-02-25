@@ -1,10 +1,13 @@
 import Post from './Post.js';
+import FileService from './FileService.js';
 
 //только логика взаимодествия с базой данных
 class PostService {
-    async create(post) {
+    async create(post, picture) {
+        //получение имени файла из FileService
+        const fileName = FileService.saveFile(picture);
         //создаем запись в базе данных
-        const createdPost = await Post.create(post)
+        const createdPost = await Post.create({ ...post, picture: fileName})
         //возврат в контроллер
         return createdPost
     }
